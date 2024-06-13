@@ -6,7 +6,7 @@ package com.rnimour.sorters.mergesort
 import java.io.File
 
 private const val ABS_PATH = "/Users/ruudnimour/dev/projects/me/coroutines/sorters"
-private const val FILENAME = "$ABS_PATH/random_list_1mil.txt"
+const val FILENAME = "$ABS_PATH/random_list_1mil.txt"
 
 class MergeSort {
     val greeting: String
@@ -28,10 +28,10 @@ fun time(message: String = "time taken", action: () -> Any): Any {
 fun main() {
     println(MergeSort().greeting)
 
-    val list = mutableListOf<Int>()
+    val list = mutableListOf<Short>()
     time("Reading file") {
         File(FILENAME).forEachLine {
-            list.add(it.toIntOrNull() ?: -1)
+            list.add(it.toShortOrNull() ?: -1)
         }
     }
 
@@ -44,7 +44,7 @@ fun main() {
 
 }
 
-fun isSorted(list: List<Int>): Boolean? {
+fun isSorted(list: List<Short>): Boolean? {
     for (i in 0..<list.size - 1) {
         if (list[i] > list[i + 1]) {
             return null
@@ -54,14 +54,14 @@ fun isSorted(list: List<Int>): Boolean? {
 }
 
 // The merge algorithms. GitHub Copilot literally wrote all of this for me, it took away the fun part :(
-fun mergeSort(list: MutableList<Int>): Any {
+fun mergeSort(list: MutableList<Short>): Any {
     if (list.size <= 1) {
         return list
     }
 
     val middle = list.size / 2
-    var left = list.subList(0, middle)
-    var right = list.subList(middle, list.size)
+    val left = list.subList(0, middle)
+    val right = list.subList(middle, list.size)
 
     mergeSort(left)
     mergeSort(right)
@@ -71,7 +71,7 @@ fun mergeSort(list: MutableList<Int>): Any {
     return list
 }
 
-fun merge(list: MutableList<Int>, left: MutableList<Int>, right: MutableList<Int>) {
+fun merge(list: MutableList<Short>, left: MutableList<Short>, right: MutableList<Short>) {
 
     var leftIndex = 0
     var rightIndex = 0
