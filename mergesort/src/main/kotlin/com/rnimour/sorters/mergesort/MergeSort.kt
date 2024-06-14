@@ -5,28 +5,16 @@ package com.rnimour.sorters.mergesort
 
 import java.io.File
 
+// give absolute path so it can run both in IDE and in terminal with `gradle run`
 private const val ABS_PATH = "/Users/ruudnimour/dev/projects/me/coroutines/sorters"
-const val FILENAME = "$ABS_PATH/random_list_1mil.txt"
+const val FILENAME = "$ABS_PATH/random_list_100mil.txt"
 
-class MergeSort {
-    val greeting: String
-        get() {
-            println(File(FILENAME).absolutePath)
-            return "Hello World! I am a merge sorter. Sorting list $FILENAME"
-        }
-}
-
-// helper
-fun time(message: String = "time taken", action: () -> Any): Any {
-    val start = System.currentTimeMillis()
-    val result = action()
-    val end = System.currentTimeMillis()
-    println("$message: ${end - start} ms")
-    return result
-}
+// 1   million takes ~0.06s to read, ~ 0.16s to sort
+// 10  million takes ~0.5 s to read, ~ 2   s to sort
+// 100 million takes ~5   s to read, ~12   s to sort
 
 fun main() {
-    println(MergeSort().greeting)
+    println("Hello World! I am a single-threaded merge sorter. Sorting list ${FILENAME.split("/").last()}")
 
     val list = mutableListOf<Short>()
     time("Reading file") {
@@ -39,18 +27,7 @@ fun main() {
         mergeSort(list)
     }
 
-    // sanity check
-    println("List is ${isSorted(list) ?: "not "}sorted")
-
-}
-
-fun isSorted(list: List<Short>): Boolean? {
-    for (i in 0..<list.size - 1) {
-        if (list[i] > list[i + 1]) {
-            return null
-        }
-    }
-    return true
+    list.sanityCheckIsSorted()
 }
 
 // The merge algorithms. GitHub Copilot literally wrote all of this for me, it took away the fun part :(
