@@ -51,6 +51,7 @@ suspend fun mergeSortRelaxedCoroutines(list: MutableList<Short>) {
     // only create new coroutines if we have to sort more than 10000 elements
     if (list.size > MAX_SPLIT_SIZE) {
         coroutineScope {
+            repeat(2) { numberOfCoroutines.incrementAndGet() }
             launch { mergeSortRelaxedCoroutines(left) }
             launch { mergeSortRelaxedCoroutines(right) }
         }

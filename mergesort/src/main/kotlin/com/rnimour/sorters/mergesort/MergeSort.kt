@@ -7,7 +7,7 @@ import java.io.File
 
 // give absolute path so it can run both in IDE and in terminal with `gradle run`
 private const val ABS_PATH = "/Users/ruudnimour/dev/projects/me/coroutines/sorters"
-const val FILENAME = "$ABS_PATH/random_list_100mil.txt"
+const val FILENAME = "$ABS_PATH/random_list_1mil.txt"
 
 // 1   million takes ~0.06s to read, ~ 0.16s to sort
 // 10  million takes ~0.5 s to read, ~ 2   s to sort
