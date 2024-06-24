@@ -31,9 +31,9 @@ fun main() {
 }
 
 // The merge algorithms. GitHub Copilot literally wrote all of this for me, it took away the fun part :(
-fun mergeSort(list: MutableList<Short>): Any {
+fun mergeSort(list: MutableList<Short>) {
     if (list.size <= 1) {
-        return list
+        return
     }
 
     val middle = list.size / 2
@@ -44,8 +44,6 @@ fun mergeSort(list: MutableList<Short>): Any {
     mergeSort(right)
 
     merge(list, left, right)
-
-    return list
 }
 
 fun merge(list: MutableList<Short>, left: MutableList<Short>, right: MutableList<Short>) {
