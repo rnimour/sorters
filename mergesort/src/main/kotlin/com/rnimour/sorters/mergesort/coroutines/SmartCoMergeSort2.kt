@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger
 // 64  million takes ~4   s to read, ~1.9 s to sort
 
 // coroutines implementation which only creates coroutines until the computation is small enough to prevent overhead.
-const val MAX_SPLIT_SIZE = 1000
+private const val MAX_SPLIT_SIZE = 1000
 private val numberOfCoroutines = AtomicInteger(0)
 
 fun main() {

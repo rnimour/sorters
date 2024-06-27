@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 // coroutines implementation which only creates coroutines until the computation is small enough to prevent overhead.
 // if the list is small enough, call the normal mergeSort.
+private const val MAX_SPLIT_SIZE = 1000
 private val numberOfCoroutines = AtomicInteger(0)
 
 fun main() {
@@ -32,7 +33,7 @@ fun main() {
     }
 
     time("Sorting") {
-        runBlocking(Dispatchers.Default) { coMergeSort3(list) }
+        runBlocking(Dispatchers.Default) { smartCoMergeSort3(list) }
     }
 
     println("Number of coroutines started: ${numberOfCoroutines.get()}")
@@ -41,7 +42,7 @@ fun main() {
 }
 
 // The merge algorithms, now multithreaded with coroutines.
-suspend fun coMergeSort3(list: MutableList<Int>) {
+suspend fun smartCoMergeSort3(list: MutableList<Int>) {
     if (list.size <= MAX_SPLIT_SIZE) {
         mergeSort(list) // no need to create coroutines for small lists
         return
