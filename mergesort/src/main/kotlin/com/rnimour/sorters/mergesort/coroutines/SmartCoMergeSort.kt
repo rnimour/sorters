@@ -10,9 +10,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
-// 1   million takes ~0.2s to read, ~ 0.2 s to sort
-// 10  million takes ~0.5s to read, ~ 0.45s to sort
-// 100 million takes ~5  s to read, ~ 3-4 s to sort
+// 1   million takes ~0.06s to read, ~0.13s to sort
+// 4   million takes ~0.25s to read, ~0.21s to sort
+// 16  million takes ~1   s to read, ~0.5 s to sort
+// 64  million takes ~4   s to read, ~1.7 s to sort
 
 // coroutines implementation which only creates at most 1023 (2^10 - 1) coroutines to prevent overhead.
 const val MAX_LEVEL = 10
@@ -20,10 +21,10 @@ const val MAX_LEVEL = 10
 fun main() {
     println("Hello World! I am a merge sorter using coroutines smartly. Sorting list ${FILENAME.split("/").last()}")
 
-    val list = mutableListOf<Short>()
+    val list = mutableListOf<Int>()
     time("Reading file") {
         File(FILENAME).forEachLine {
-            list.add(it.toShortOrNull() ?: -1)
+            list.add(it.toIntOrNull() ?: -1)
         }
     }
 
@@ -35,7 +36,7 @@ fun main() {
 }
 
 // The merge algorithms, now multithreaded with coroutines.
-suspend fun coMergeSort(list: MutableList<Short>, level: Int) {
+suspend fun coMergeSort(list: MutableList<Int>, level: Int) {
     if (list.size <= 1) {
         return
     }

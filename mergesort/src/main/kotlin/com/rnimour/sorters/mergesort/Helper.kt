@@ -16,7 +16,7 @@ fun time(message: String = "time taken", action: () -> Any): Any {
     return result
 }
 
-fun MutableList<Short>.sanityCheckIsSorted() {
+fun MutableList<Int>.sanityCheckIsSorted() {
     time("Checking") {
         if (isSorted(this)) {
             println("List is sorted")
@@ -26,7 +26,7 @@ fun MutableList<Short>.sanityCheckIsSorted() {
     }
 }
 
-fun isSorted(list: List<Short>): Boolean {
+fun isSorted(list: List<Int>): Boolean {
     for (i in 0..<list.size - 1) {
         if (list[i] > list[i + 1]) {
             return false

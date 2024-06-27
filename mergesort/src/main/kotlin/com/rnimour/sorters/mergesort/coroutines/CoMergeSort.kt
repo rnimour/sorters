@@ -10,19 +10,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
-// 1   million takes ~0.10s to read, ~1  s to sort
-// 10  million takes ~0.5 s to read, ~4  s to sort
-// 100 million takes ~5   s to read, ~???s to sort (longer than 600s). java.lang.OutOfMemoryError: Java heap space
+// 1   million takes ~0.06s to read, ~0.75s to sort
+// 4   million takes ~0.25s to read, ~1.6 s to sort
+// 16  million takes ~1   s to read, ~6   s to sort
+// 64  million takes ~4   s to read, ~28  s to sort
 
 // naive coroutines implementation: create new coroutine for each mergeSort call.
 // Massive overhead: coroutine started for each element in the list.
 fun main() = runBlocking {
     println("Hello World! I am a merge sorter using coroutines. Sorting list ${FILENAME.split("/").last()}")
 
-    val list = mutableListOf<Short>()
+    val list = mutableListOf<Int>()
     time("Reading file") {
         File(FILENAME).forEachLine {
-            list.add(it.toShortOrNull() ?: -1)
+            list.add(it.toIntOrNull() ?: -1)
         }
     }
 
@@ -34,7 +35,7 @@ fun main() = runBlocking {
 }
 
 // The merge algorithms, now multithreaded with coroutines.
-suspend fun coMergeSort(list: MutableList<Short>) {
+suspend fun coMergeSort(list: MutableList<Int>) {
     if (list.size <= 1) {
         return
     }

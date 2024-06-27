@@ -7,19 +7,20 @@ import java.io.File
 
 // give absolute path so it can run both in IDE and in terminal with `gradle run`
 private const val ABS_PATH = "/Users/ruudnimour/dev/projects/me/coroutines/sorters"
-const val FILENAME = "$ABS_PATH/random_list_1mil.txt"
+const val FILENAME = "$ABS_PATH/random_ints_64mil.txt"
 
-// 1   million takes ~0.06s to read, ~ 0.16s to sort
-// 10  million takes ~0.5 s to read, ~ 2   s to sort
-// 100 million takes ~5   s to read, ~12   s to sort
+// 1   million takes ~0.06s to read, ~0.15s to sort
+// 4   million takes ~0.25s to read, ~0.6 s to sort
+// 16  million takes ~1   s to read, ~1.8 s to sort
+// 64  million takes ~4   s to read, ~7.5 s to sort
 
 fun main() {
     println("Hello World! I am a single-threaded merge sorter. Sorting list ${FILENAME.split("/").last()}")
 
-    val list = mutableListOf<Short>()
+    val list = mutableListOf<Int>()
     time("Reading file") {
         File(FILENAME).forEachLine {
-            list.add(it.toShortOrNull() ?: -1)
+            list.add(it.toIntOrNull() ?: -1)
         }
     }
 
@@ -31,7 +32,7 @@ fun main() {
 }
 
 // The merge algorithms. GitHub Copilot literally wrote all of this for me, it took away the fun part :(
-fun mergeSort(list: MutableList<Short>) {
+fun mergeSort(list: MutableList<Int>) {
     if (list.size <= 1) {
         return
     }
@@ -46,7 +47,7 @@ fun mergeSort(list: MutableList<Short>) {
     merge(list, left, right)
 }
 
-fun merge(list: MutableList<Short>, left: MutableList<Short>, right: MutableList<Short>) {
+fun merge(list: MutableList<Int>, left: MutableList<Int>, right: MutableList<Int>) {
 
     var leftIndex = 0
     var rightIndex = 0

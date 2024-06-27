@@ -11,9 +11,10 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
-// 1   million takes ~0.2s to read, ~ 0.2 s to sort
-// 10  million takes ~0.5s to read, ~ 0.45s to sort
-// 100 million takes ~5  s to read, ~ 3-4 s to sort
+// 1   million takes ~0.06s to read, ~0.13s to sort
+// 4   million takes ~0.25s to read, ~0.24s to sort
+// 16  million takes ~1   s to read, ~0.55s to sort
+// 64  million takes ~4   s to read, ~1.9 s to sort
 
 // coroutines implementation which only creates coroutines until the computation is small enough to prevent overhead.
 const val MAX_SPLIT_SIZE = 1000
@@ -22,10 +23,10 @@ val numberOfCoroutines = AtomicInteger(0)
 fun main() {
     println("Hello World! I am a merge sorter using coroutines smartly (way 2). Sorting list ${FILENAME.split("/").last()}")
 
-    val list = mutableListOf<Short>()
+    val list = mutableListOf<Int>()
     time("Reading file") {
         File(FILENAME).forEachLine {
-            list.add(it.toShortOrNull() ?: -1)
+            list.add(it.toIntOrNull() ?: -1)
         }
     }
 
@@ -39,7 +40,7 @@ fun main() {
 }
 
 // The merge algorithms, now multithreaded with coroutines.
-suspend fun mergeSortRelaxedCoroutines(list: MutableList<Short>) {
+suspend fun mergeSortRelaxedCoroutines(list: MutableList<Int>) {
     if (list.size <= 1) {
         return
     }
