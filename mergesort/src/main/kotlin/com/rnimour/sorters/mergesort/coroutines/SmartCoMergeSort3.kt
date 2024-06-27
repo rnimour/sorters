@@ -1,9 +1,6 @@
 package com.rnimour.sorters.mergesort.coroutines
 
-import com.rnimour.sorters.mergesort.FILENAME
-import com.rnimour.sorters.mergesort.merge
-import com.rnimour.sorters.mergesort.sanityCheckIsSorted
-import com.rnimour.sorters.mergesort.time
+import com.rnimour.sorters.mergesort.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -17,11 +14,15 @@ import java.util.concurrent.atomic.AtomicInteger
 // 64  million takes ~4   s to read, ~1.9 s to sort
 
 // coroutines implementation which only creates coroutines until the computation is small enough to prevent overhead.
-const val MAX_SPLIT_SIZE = 1000
+// if the list is small enough, call the normal mergeSort.
 private val numberOfCoroutines = AtomicInteger(0)
 
 fun main() {
-    println("Hello World! I am a merge sorter using coroutines smartly (way 2). Sorting list ${FILENAME.split("/").last()}")
+    println(
+        "Hello World! I am a merge sorter using coroutines smartly (way 3). Sorting list ${
+            FILENAME.split("/").last()
+        }"
+    )
 
     val list = mutableListOf<Int>()
     time("Reading file") {
@@ -31,7 +32,7 @@ fun main() {
     }
 
     time("Sorting") {
-        runBlocking(Dispatchers.Default) { smartCoMergeSort2(list) }
+        runBlocking(Dispatchers.Default) { coMergeSort3(list) }
     }
 
     println("Number of coroutines started: ${numberOfCoroutines.get()}")
@@ -40,8 +41,9 @@ fun main() {
 }
 
 // The merge algorithms, now multithreaded with coroutines.
-suspend fun smartCoMergeSort2(list: MutableList<Int>) {
-    if (list.size <= 1) {
+suspend fun coMergeSort3(list: MutableList<Int>) {
+    if (list.size <= MAX_SPLIT_SIZE) {
+        mergeSort(list) // no need to create coroutines for small lists
         return
     }
 
@@ -49,16 +51,10 @@ suspend fun smartCoMergeSort2(list: MutableList<Int>) {
     val left = list.subList(0, middle)
     val right = list.subList(middle, list.size)
 
-    // only create new coroutines if we have to sort more than 10000 elements
-    if (list.size > MAX_SPLIT_SIZE) {
-        coroutineScope {
-            repeat(2) { numberOfCoroutines.incrementAndGet() }
-            launch { smartCoMergeSort2(left) }
-            launch { smartCoMergeSort2(right) }
-        }
-    } else {
-        smartCoMergeSort2(left)
-        smartCoMergeSort2(right)
+    coroutineScope {
+        repeat(2) { numberOfCoroutines.incrementAndGet() }
+        launch { smartCoMergeSort2(left) }
+        launch { smartCoMergeSort2(right) }
     }
 
     merge(list, left, right)

@@ -16,7 +16,7 @@ import java.io.File
 // 64  million takes ~4   s to read, ~1.7 s to sort
 
 // coroutines implementation which only creates at most 1023 (2^10 - 1) coroutines to prevent overhead.
-const val MAX_LEVEL = 10
+private const val MAX_LEVEL = 10
 
 fun main() {
     println("Hello World! I am a merge sorter using coroutines smartly. Sorting list ${FILENAME.split("/").last()}")
@@ -29,14 +29,14 @@ fun main() {
     }
 
     time("Sorting") {
-        runBlocking(Dispatchers.Default) { coMergeSort(list, 0) }
+        runBlocking(Dispatchers.Default) { smartCoMergeSort(list, 0) }
     }
 
     list.sanityCheckIsSorted()
 }
 
 // The merge algorithms, now multithreaded with coroutines.
-suspend fun coMergeSort(list: MutableList<Int>, level: Int) {
+suspend fun smartCoMergeSort(list: MutableList<Int>, level: Int) {
     if (list.size <= 1) {
         return
     }
@@ -48,12 +48,12 @@ suspend fun coMergeSort(list: MutableList<Int>, level: Int) {
     // only create new coroutines if we are below the max level
     if (level < MAX_LEVEL) {
         coroutineScope {
-            launch { coMergeSort(left, level + 1) }
-            launch { coMergeSort(right, level + 1) }
+            launch { smartCoMergeSort(left, level + 1) }
+            launch { smartCoMergeSort(right, level + 1) }
         }
     } else {
-        coMergeSort(left, level + 1)
-        coMergeSort(right, level + 1)
+        smartCoMergeSort(left, level + 1)
+        smartCoMergeSort(right, level + 1)
     }
 
     merge(list, left, right)
